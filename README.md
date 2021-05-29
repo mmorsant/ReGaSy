@@ -9,12 +9,28 @@ Because its the best thing to run our code and see it works and, most importantl
 **Who?**
 I'm from Argentina and I study medicine, while in the spaces between books and practices I search a lot about programming in C++.
 
-Objectives (ready's are labeled):
-- ~~Movement and world generation~~.
-- Walls generation.
-- Enemies spawn and basic attacks.
-- Spawn rooms with rules.
-- Puzzles.
+**Objectives** (ready's are labeled):
+- [x] ~~Movement and World Generation~~.
+- [ ] Walls generation and collision.
+- [ ] Enemies spawn and basic attacks.
+- [ ] Spawn rooms based on rules (random generation).
+- [ ] Puzzles.
+
+**Needs**
+This program is set to run without any add, it is writed whith standard C++ code.
 
 **LICENSE**
 Everything in this project is open and free to use, just please leave a comment to know if it works or some issues come to light.
+
+**Controls**
+*Whit the number keyboard*
+
+4 :arrow_left: Move to the Left.
+
+6 :arrow_right: Move to the Right.
+
+2 :arrow_down: Move Down.
+
+8 :arrow_up: Move Up.
+
+5 :end: End Game.
