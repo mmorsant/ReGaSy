@@ -23,7 +23,7 @@ This program is set to run without any add, it is writed whith standard C++ code
 Everything in this project is open and free to use, just please leave a comment to know if it works or some issues come to light.
 
 **Controls**
-*Whit the number keyboard*
+*With the number keyboard*
 
 4 :arrow_left: Move to the Left.
 
