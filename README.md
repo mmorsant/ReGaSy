@@ -11,7 +11,7 @@ I'm from Argentina and I study medicine, while in the spaces between books and p
 
 **Objectives** (ready's are labeled):
 - [x] ~~Movement and World Generation~~.
-- [ ] Walls generation and collision.
+- [x] ~~Walls generation and collision~~.
 - [ ] Enemies spawn and basic attacks.
 - [ ] Spawn rooms based on rules (random generation).
 - [ ] Puzzles.
