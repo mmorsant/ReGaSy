@@ -3,150 +3,176 @@
 
 namespace ID
 {
-	enum id
-	{
-		player = 64,
-		floor = 176,
-		wall = 219
-	};
+	const int width{ 20 };
+	const int height{ 10 };
 
-	int positionX{0};
-	int positionY{0};
+	const char player = 64;
+	const char floor = 176;
+	const char wall = 219;
+
+	int positionX{ 1 };
+	int positionY{ 1 };
+
+	const int extremeXplus{ (width - 2) };
+	const int extremeXminus{ (width - (width - 1)) };
+	const int extremeYplus{ (height - 2) };
+	const int extremeYminus{ (height - (height -1)) };
 }
 
-class Rpg
+class GameSystem
 {
 private:
-	int** ptr;
-	bool inGame;
+	char** m_grid;
+	bool m_firstRun;
 
 public:
-	Rpg() : inGame{true}
+	GameSystem() : m_firstRun{true}
 	{
-		ptr = new int*[10];	                //rounds
-		for (int a{ 0 }; a < 10; a++)		//columns
+		m_grid = new char*[ID::height];			//rounds
+		for (int a{ 0 }; a < (ID::height); a++)	//columns
 		{
-			ptr[a] = new int [10];
+			m_grid[a] = new char [ID::width];
 		}
 	}
 
 	void init()
 	{
-		for (int a{ 0 }; a < 10; a++)
+		for (int a{ 0 }; a < (ID::height); a++)			//rounds
 		{
-			for (int b{ 0 }; b < 10; b++)
+			for (int b{ 0 }; b < (ID::width); b++)		//columns
 			{
-				ptr[a][b] = ID::floor;
+				m_grid[a][b] = ID::floor;
 			}
 		}
 
-		ptr[ID::positionY][ID::positionX] = ID::player;
+		m_grid[ID::positionY][ID::positionX] = ID::player;
+
+		//make default walls
+		for (int a{0}; a < (ID::width); a++)		//superior
+		{
+			m_grid[0][a] = ID::wall;
+		}
+		for (int a{0}; a < (ID::height); a++)		//left
+		{
+			m_grid[a][0] = ID::wall;
+		}
+		for (int a{0}; a < (ID::height); a++)		//right
+		{
+			m_grid[a][ID::width - 1] = ID::wall;
+		}
+		for (int a{0}; a < (ID::width); a++)		//inferior
+		{
+			m_grid[ID::height - 1][a] = ID::wall;
+		}
 	}
 
 	bool state(int& input)
 	{
-		if (inGame == true)
+		// > to second state put floor on the player was
+		if (m_firstRun == true)
 		{
-			inGame = false;
+			m_firstRun = false;
 		}
 		else 
 		{
-			ptr[ID::positionY][ID::positionX] = ID::floor;
+			m_grid[ID::positionY][ID::positionX] = ID::floor;
 		}
-
+		
+		//movement system
 		switch (input)
 		{
 		case 4:
 			//move left
-			if (ID::positionX == 0) 
+			if (ID::positionX == ID::extremeXminus)
 			{
-				ptr[ID::positionY][ID::positionX] = ID::player;
+				m_grid[ID::positionY][ID::positionX] = ID::player;
 			}
 			else
 			{
 				ID::positionX--;
-				ptr[ID::positionY][ID::positionX] = ID::player;
+				m_grid[ID::positionY][ID::positionX] = ID::player;
 			}
 			break;
 		case 6:
 			//move right
-			if(ID::positionX == 9)
+			if(ID::positionX == ID::extremeXplus)
 			{
-				ptr[ID::positionY][ID::positionX] = ID::player;
+				m_grid[ID::positionY][ID::positionX] = ID::player;
 			}
 			else
 			{
 				ID::positionX++;
-				ptr[ID::positionY][ID::positionX] = ID::player;
+				m_grid[ID::positionY][ID::positionX] = ID::player;
 			}
 			break;
 		case 8:
 			//move up
-			if(ID::positionY == 0)
+			if(ID::positionY == ID::extremeYminus)
 			{
-				ptr[ID::positionY][ID::positionX] = ID::player;
+				m_grid[ID::positionY][ID::positionX] = ID::player;
 			}
 			else
 			{
 				ID::positionY--;
-				ptr[ID::positionY][ID::positionX] = ID::player;
+				m_grid[ID::positionY][ID::positionX] = ID::player;
 			}
 			break;
 		case 2:
 			//move down
-			if (ID::positionY == 9)
+			if (ID::positionY == ID::extremeYplus)
 			{
-				ptr[ID::positionY][ID::positionX] = ID::player;
+				m_grid[ID::positionY][ID::positionX] = ID::player;
 			}
 			else
 			{
 				ID::positionY++;
-				ptr[ID::positionY][ID::positionX] = ID::player;
+				m_grid[ID::positionY][ID::positionX] = ID::player;
 			}
 			break;
 		case 5:
 			return false;
 		}
-
-		frame();
+		
+		//console output
+		draw();
 
 		return true;
 	}
 
-	void frame()
+	void draw()
 	{
-		for (int a{ 0 }; a < 10; a++)
+		for (int a{ 0 }; a < (ID::height); a++)
 		{
-			for (int b{ 0 }; b < 10; b++)
+			for (int b{ 0 }; b < (ID::width); b++)
 			{
-				std::cout << static_cast<char>(ptr[a][b]);
+				std::cout << m_grid[a][b];
 			}
 			std::cout << '\n';
 		}
 	}
 
-	~Rpg()
+	~GameSystem()
 	{
-		for (int a{ 0 }; a < 10; a++)
+		for (int a{ 0 }; a < (ID::height); a++)
 		{
-			delete[] ptr[a];
+			delete[] m_grid[a];
 		}
-		delete ptr;
-		ptr = nullptr;
+		delete m_grid;
+		m_grid = nullptr;
 	}
 };
 
 int main()
 {
-	Rpg game;
-	game.init();
+	GameSystem run;
+	run.init();
 
-	int move{ 0 };
+	int key{ 0 };
 
-	while (game.state(move))
+	while (run.state(key))
 	{
-		move = 0;
-		std::cin >> move;
+		key = 0;
+		std::cin >> key;
 		system("CLS");
 	}
 
