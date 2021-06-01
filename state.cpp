@@ -1,22 +1,28 @@
 #include <iostream>
 #include <cstdlib>
 
-namespace ID
+namespace GRID
 {
-	const int width{ 20 };
-	const int height{ 10 };
-
-	const char player = 64;
-	const char floor = 176;
-	const char wall = 219;
-
-	int positionX{ 1 };
-	int positionY{ 1 };
+	constexpr int width{ 20 };
+	constexpr int height{ 10 };
 
 	const int extremeXplus{ (width - 2) };
 	const int extremeXminus{ (width - (width - 1)) };
 	const int extremeYplus{ (height - 2) };
-	const int extremeYminus{ (height - (height -1)) };
+	const int extremeYminus{ (height - (height - 1)) };
+}
+
+namespace PLAYER
+{
+	int positionX{ 1 };
+	int positionY{ 1 };
+}
+
+namespace TILE
+{
+	constexpr char player = 64;
+	constexpr char floor = 176;
+	constexpr char wall = 219;
 }
 
 class GameSystem
@@ -26,47 +32,47 @@ private:
 	bool m_firstRun;
 
 public:
-	GameSystem() : m_firstRun{true}
+	GameSystem() : m_firstRun{true}					//allocate memory and create actors
 	{
-		m_grid = new char*[ID::height];			//rounds
-		for (int a{ 0 }; a < (ID::height); a++)	//columns
+		m_grid = new char*[GRID::height];			//rounds
+		for (int a{ 0 }; a < (GRID::height); a++)		//columns
 		{
-			m_grid[a] = new char [ID::width];
+			m_grid[a] = new char [GRID::width];
 		}
 	}
 
-	void init()
+	void init()							//floor, wall and player tiles set
 	{
-		for (int a{ 0 }; a < (ID::height); a++)			//rounds
+		for (int a{ 0 }; a < (GRID::height); a++)		//rounds
 		{
-			for (int b{ 0 }; b < (ID::width); b++)		//columns
+			for (int b{ 0 }; b < (GRID::width); b++)	//columns
 			{
-				m_grid[a][b] = ID::floor;
+				m_grid[a][b] = TILE::floor;
 			}
 		}
 
-		m_grid[ID::positionY][ID::positionX] = ID::player;
+		m_grid[PLAYER::positionY][PLAYER::positionX] = TILE::player;
 
 		//make default walls
-		for (int a{0}; a < (ID::width); a++)		//superior
+		for (int a{0}; a < (GRID::width); a++)			//superior
 		{
-			m_grid[0][a] = ID::wall;
+			m_grid[0][a] = TILE::wall;
 		}
-		for (int a{0}; a < (ID::height); a++)		//left
+		for (int a{0}; a < (GRID::height); a++)			//left
 		{
-			m_grid[a][0] = ID::wall;
+			m_grid[a][0] = TILE::wall;
 		}
-		for (int a{0}; a < (ID::height); a++)		//right
+		for (int a{0}; a < (GRID::height); a++)			//right
 		{
-			m_grid[a][ID::width - 1] = ID::wall;
+			m_grid[a][GRID::width - 1] = TILE::wall;
 		}
-		for (int a{0}; a < (ID::width); a++)		//inferior
+		for (int a{0}; a < (GRID::width); a++)			//inferior
 		{
-			m_grid[ID::height - 1][a] = ID::wall;
+			m_grid[GRID::height - 1][a] = TILE::wall;
 		}
 	}
 
-	bool state(int& input)
+	bool state(int& input)						//player movement and draw
 	{
 		// > to second state put floor on the player was
 		if (m_firstRun == true)
@@ -75,7 +81,7 @@ public:
 		}
 		else 
 		{
-			m_grid[ID::positionY][ID::positionX] = ID::floor;
+			m_grid[PLAYER::positionY][PLAYER::positionX] = TILE::floor;
 		}
 		
 		//movement system
@@ -83,50 +89,50 @@ public:
 		{
 		case 4:
 			//move left
-			if (ID::positionX == ID::extremeXminus)
+			if (PLAYER::positionX == GRID::extremeXminus)
 			{
-				m_grid[ID::positionY][ID::positionX] = ID::player;
+				m_grid[PLAYER::positionY][PLAYER::positionX] = TILE::player;
 			}
 			else
 			{
-				ID::positionX--;
-				m_grid[ID::positionY][ID::positionX] = ID::player;
+				PLAYER::positionX--;
+				m_grid[PLAYER::positionY][PLAYER::positionX] = TILE::player;
 			}
 			break;
 		case 6:
 			//move right
-			if(ID::positionX == ID::extremeXplus)
+			if(PLAYER::positionX == GRID::extremeXplus)
 			{
-				m_grid[ID::positionY][ID::positionX] = ID::player;
+				m_grid[PLAYER::positionY][PLAYER::positionX] = TILE::player;
 			}
 			else
 			{
-				ID::positionX++;
-				m_grid[ID::positionY][ID::positionX] = ID::player;
+				PLAYER::positionX++;
+				m_grid[PLAYER::positionY][PLAYER::positionX] = TILE::player;
 			}
 			break;
 		case 8:
 			//move up
-			if(ID::positionY == ID::extremeYminus)
+			if(PLAYER::positionY == GRID::extremeYminus)
 			{
-				m_grid[ID::positionY][ID::positionX] = ID::player;
+				m_grid[PLAYER::positionY][PLAYER::positionX] = TILE::player;
 			}
 			else
 			{
-				ID::positionY--;
-				m_grid[ID::positionY][ID::positionX] = ID::player;
+				PLAYER::positionY--;
+				m_grid[PLAYER::positionY][PLAYER::positionX] = TILE::player;
 			}
 			break;
 		case 2:
 			//move down
-			if (ID::positionY == ID::extremeYplus)
+			if (PLAYER::positionY == GRID::extremeYplus)
 			{
-				m_grid[ID::positionY][ID::positionX] = ID::player;
+				m_grid[PLAYER::positionY][PLAYER::positionX] = TILE::player;
 			}
 			else
 			{
-				ID::positionY++;
-				m_grid[ID::positionY][ID::positionX] = ID::player;
+				PLAYER::positionY++;
+				m_grid[PLAYER::positionY][PLAYER::positionX] = TILE::player;
 			}
 			break;
 		case 5:
@@ -139,11 +145,11 @@ public:
 		return true;
 	}
 
-	void draw()
+	void draw()							//console out the grid
 	{
-		for (int a{ 0 }; a < (ID::height); a++)
+		for (int a{ 0 }; a < (GRID::height); a++)
 		{
-			for (int b{ 0 }; b < (ID::width); b++)
+			for (int b{ 0 }; b < (GRID::width); b++)
 			{
 				std::cout << m_grid[a][b];
 			}
@@ -151,9 +157,9 @@ public:
 		}
 	}
 
-	~GameSystem()
+	~GameSystem()							//deallocate memory
 	{
-		for (int a{ 0 }; a < (ID::height); a++)
+		for (int a{ 0 }; a < (GRID::height); a++)
 		{
 			delete[] m_grid[a];
 		}
