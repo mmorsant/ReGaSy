@@ -6,11 +6,6 @@ namespace GRID
 {
 	constexpr int width{ 20 };
 	constexpr int height{ 10 };
-
-	const int extremeXplus{ (width - 2) };
-	const int extremeXminus{ (width - (width - 1)) };
-	const int extremeYplus{ (height - 2) };
-	const int extremeYminus{ (height - (height - 1)) };
 }
 
 namespace PLAYER
@@ -90,6 +85,7 @@ public:
 		{
 			m_grid[GRID::height - 1][a] = TILE::wall;
 		}
+		m_grid[4][4] = TILE::wall;
 
 		//spawn enemies
 		spawnEnemy(6, 3);
@@ -104,72 +100,46 @@ public:
 	{
 		// > to second state put floor on the player was
 		if (m_firstRun == true)
-		{
 			m_firstRun = false;
-		}
 		else
-		{
 			m_grid[PLAYER::positionY][PLAYER::positionX] = TILE::floor;
-		}
 
 		//movement system
 		switch (input)
 		{
 		case 4:
 			//move left
-			if (PLAYER::positionX == GRID::extremeXminus)
-			{
-				m_grid[PLAYER::positionY][PLAYER::positionX] = TILE::player;
-			}
-			else
-			{
+			if (!(collision(PLAYER::positionY, PLAYER::positionX, 4, TILE::wall)))
 				PLAYER::positionX--;
-				m_grid[PLAYER::positionY][PLAYER::positionX] = TILE::player;
-			}
 			break;
 		case 6:
 			//move right
-			if (PLAYER::positionX == GRID::extremeXplus)
-			{
-				m_grid[PLAYER::positionY][PLAYER::positionX] = TILE::player;
-			}
-			else
-			{
+			if (!(collision(PLAYER::positionY, PLAYER::positionX, 6, TILE::wall)))
 				PLAYER::positionX++;
-				m_grid[PLAYER::positionY][PLAYER::positionX] = TILE::player;
-			}
 			break;
 		case 8:
 			//move up
-			if (PLAYER::positionY == GRID::extremeYminus)
-			{
-				m_grid[PLAYER::positionY][PLAYER::positionX] = TILE::player;
-			}
-			else
-			{
+			if (!(collision(PLAYER::positionY, PLAYER::positionX, 8, TILE::wall)))
 				PLAYER::positionY--;
-				m_grid[PLAYER::positionY][PLAYER::positionX] = TILE::player;
-			}
 			break;
 		case 2:
 			//move down
-			if (PLAYER::positionY == GRID::extremeYplus)
-			{
-				m_grid[PLAYER::positionY][PLAYER::positionX] = TILE::player;
-			}
-			else
-			{
+			if (!(collision(PLAYER::positionY, PLAYER::positionX, 2, TILE::wall)))
 				PLAYER::positionY++;
-				m_grid[PLAYER::positionY][PLAYER::positionX] = TILE::player;
-			}
 			break;
 		case 5:
 			return false;
 		}
+		m_grid[PLAYER::positionY][PLAYER::positionX] = TILE::player;
 
-		moveEnemy();
+		//moveEnemy();
 		draw();
 
+		if (!(damage(PLAYER::positionY, PLAYER::positionX)))
+			return true;
+		else
+			std::cout << "You died!" << '\n';
+			return false;
 		return true;
 	}
 
@@ -185,7 +155,7 @@ public:
 			std::cout << '\n';
 		}
 	}
-	
+
 	//Generate a random number between 501 and 502 (pre, not finished)
 	int random()
 	{
@@ -243,7 +213,6 @@ public:
 					//replace the tile where it last be with floor
 					m_grid[m_enemies[a].posY][m_enemies[a].posX] = TILE::floor;
 					//move the coords
-					m_enemies[a].posY++;
 					m_enemies[a].posX++;
 					//put the enemy tile in the new position
 					m_grid[m_enemies[a].posY][m_enemies[a].posX] = m_enemies[a].tile;
@@ -253,11 +222,54 @@ public:
 					//replace the tile where it last be with floor
 					m_grid[m_enemies[a].posY][m_enemies[a].posX] = TILE::floor;
 					//move the coords
-					m_enemies[a].posY--;
 					m_enemies[a].posX--;
 					//put the enemy tile in the new position
 					m_grid[m_enemies[a].posY][m_enemies[a].posX] = m_enemies[a].tile;
 				}
+			}
+		}
+	}
+
+	//Take the coords of the player, the direction to compare and the tile that is compared.
+	//direction index: 8 if up, 2 if down, 4 if left, 6 if right.
+	bool collision(int tempPosY, int tempPosX, short direction, unsigned char tileColl, bool isColl = false)
+	{
+		if (direction == 8)
+		{
+			tempPosY--;
+		}
+		else if (direction == 2)
+		{
+			tempPosY++;
+		}
+		else if (direction == 4)
+		{
+			tempPosX--;
+		}
+		else if (direction == 6)
+		{
+			tempPosX++;
+		}
+
+		isColl = ((m_grid[tempPosY][tempPosX]) == tileColl);
+		if (isColl == true)
+			return true;
+		else
+			return false;
+	}
+
+	//If the player collide with a enemy, end the game.
+	bool damage(int tempPosY, int tempPosX)
+	{
+		for (unsigned short a{0}; a < (m_enemies.size()); a++ )
+		{
+			if (((PLAYER::positionY) == (m_enemies[a].posY)) && ((PLAYER::positionX) == (m_enemies[a].posX)))
+			{
+				return true;
+			}
+			else
+			{
+				return false;
 			}
 		}
 	}
