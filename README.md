@@ -12,8 +12,8 @@ I'm from Argentina and I study medicine, while in the spaces between books and p
 
 ### **Objectives** (ready's are labeled):
 - [x] World grid default and user's set up (size, ascii tiles).
-- [ ] Player spawn, movement, collision and life/damage system automation.
-- [ ] Enemy template creation (ascii tile, movement, amount of damage).
+- [x] Player spawn, movement, collision and life/damage system automation.
+- [x] Enemy template creation (ascii tile, spawn, movement, amount of damage, collision and reestructuration of the path).
 - [ ] Puzzle object template creation (action, ascii tile).
 - [ ] Room template creation (walls, floor, enemies).
 - [ ] Random room generation (based on room templates) inside the world size connected by bridges.
