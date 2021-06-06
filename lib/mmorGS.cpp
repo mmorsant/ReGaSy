@@ -17,7 +17,6 @@ bool mmorGS::createWorld(ushort height, ushort width)
 
 	return true;
 }
-
 void mmorGS::setTiles(uchar floorTile, uchar wallTile)
 {
 	gs_floorTile = floorTile;
@@ -53,30 +52,6 @@ void mmorGS::setTiles(uchar floorTile, uchar wallTile)
 	}
 }
 
-bool mmorGS::spawnPlayer(uchar tile, ushort posY, ushort posX)
-{
-	gs_playerTile = tile;
-
-	gs_playerPosY = posY;
-	gs_playerPosX = posX;
-
-	gs_grid[gs_playerPosY][gs_playerPosX] = gs_playerTile;
-
-	return true;
-}
-
-void mmorGS::setPlayerLife(uint amountLife)
-{
-	gs_playerLife = amountLife;
-}
-
-void mmorGS::setKeys(uchar upKey, uchar downKey, uchar leftKey, uchar rightKey)
-{
-	gs_upKey = upKey;
-	gs_downKey = downKey;
-	gs_leftKey = leftKey;
-	gs_rightKey = rightKey;
-}
 
 bool mmorGS::frame(uchar input, uchar finish)
 {
@@ -90,9 +65,21 @@ bool mmorGS::frame(uchar input, uchar finish)
 	{
 		if (input != finish)
 		{
-			if (!(collision(input, gs_wallTile)))
+			moveEnemies();
+			if (!(playerCollision(input, gs_wallTile)))
 			{
-				movePlayer(input);
+				if (!(playerDamage(input)))
+					movePlayer(input);
+				else
+				{
+					if (gs_playerLife <= 0)
+					{
+						std::cout << "You are dead" << '\n';
+						return false;
+					}
+					else
+						NULL;
+				}
 			}
 			else
 				NULL;
@@ -105,7 +92,6 @@ bool mmorGS::frame(uchar input, uchar finish)
 		}
 	}
 }
-
 void mmorGS::draw()
 {
 	system("CLS");
@@ -118,10 +104,31 @@ void mmorGS::draw()
 		}
 		std::cout << '\n';
 	}
-
-	std::cout << "Player Life: " << gs_playerLife << '\n';
+	
+	std::cout << "Life: " << gs_playerLife << '\n';
 }
 
+
+void mmorGS::spawnPlayer(uchar tile, ushort posY, ushort posX)
+{
+	gs_playerTile = tile;
+
+	gs_playerPosY = posY;
+	gs_playerPosX = posX;
+
+	gs_grid[gs_playerPosY][gs_playerPosX] = gs_playerTile;
+}
+void mmorGS::setPlayerLife(int amountLife)
+{
+	gs_playerLife = amountLife;
+}
+void mmorGS::setKeys(uchar upKey, uchar downKey, uchar leftKey, uchar rightKey)
+{
+	gs_upKey = upKey;
+	gs_downKey = downKey;
+	gs_leftKey = leftKey;
+	gs_rightKey = rightKey;
+}
 bool mmorGS::movePlayer(uchar input)
 {
 	if (input == gs_upKey)
@@ -149,8 +156,7 @@ bool mmorGS::movePlayer(uchar input)
 	gs_grid[gs_playerPosY][gs_playerPosX] = gs_playerTile;
 	return true;
 }
-
-bool mmorGS::collision(uchar input, uchar tileColl)
+bool mmorGS::playerCollision(uchar input, uchar tileColl)
 {
 	ushort tempPosY = gs_playerPosY;
 	ushort tempPosX = gs_playerPosX;
@@ -171,11 +177,66 @@ bool mmorGS::collision(uchar input, uchar tileColl)
 	else
 		return false;
 }
-
-bool mmorGS::damage()
+bool mmorGS::playerDamage(uchar input)
 {
+	for (ushort a{ 0 }; a < gs_enemies.size(); a++)
+	{
+		if (playerCollision(input, gs_enemies[a].tile))
+		{
+			gs_playerLife -= gs_enemies[a].damage;
+			return true;
+		}
+	}
 	return false;
 }
+
+void mmorGS::createEnemyBuffer(uint size)
+{
+	gs_enemies.reserve(size);
+}
+void mmorGS::createEnemy(uchar tile, uint damage, short moveY, short moveX)
+{
+	ushort tempId = (gs_enemies.size());
+	gs_enemies.push_back({ tempId, tile, damage, 0, 0, moveY, moveX});
+}
+void mmorGS::spawnEnemy(ushort id, ushort posY, ushort posX)
+{
+	gs_enemies[id].posY = posY;
+	gs_enemies[id].posX = posX;
+
+	gs_grid[gs_enemies[id].posY][gs_enemies[id].posX] = gs_enemies[id].tile;
+}
+void mmorGS::moveEnemies()
+{
+	for (ushort a{0}; a < gs_enemies.size(); a++)
+	{
+		if (!(enemyCollision(a, gs_enemies[a].moveY, gs_enemies[a].moveX, gs_wallTile)))
+		{
+			gs_grid[gs_enemies[a].posY][gs_enemies[a].posX] = gs_floorTile;
+
+			gs_enemies[a].posY = (gs_enemies[a].posY) + (gs_enemies[a].moveY);
+			gs_enemies[a].posX = (gs_enemies[a].posX) + (gs_enemies[a].moveX);
+
+			gs_grid[gs_enemies[a].posY][gs_enemies[a].posX] = gs_enemies[a].tile;
+		}
+		else
+		{
+			gs_enemies[a].moveY = -(gs_enemies[a].moveY);
+			gs_enemies[a].moveX = -(gs_enemies[a].moveX);
+		}
+	}
+}
+bool mmorGS::enemyCollision(ushort id, int posY, int posX, uchar tileColl)
+{
+	ushort tempPosY = gs_enemies[id].posY + (posY);
+	ushort tempPosX = gs_enemies[id].posX + (posX);
+
+	if ((gs_grid[tempPosY][tempPosX]) == tileColl)
+		return true;
+	else
+		return false;
+}
+
 
 mmorGS::~mmorGS()
 {
