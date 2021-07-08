@@ -1,6 +1,8 @@
 # **Retro Game System/REGASY**
 by @mmorsant
 
+![Example Of REGASY](https://github.com/mmorsant/ReGaSy/blob/master/example-REGASY.png)
+
 ### **CONCEPTS**
 A CMD Windows Console game engine with support for ASCII table codes.
 - [x] World grid size and spawn set up (size, ascii tiles).
