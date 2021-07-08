@@ -1,30 +1,32 @@
 #ifndef mmorGS_h
 #define mmorGS_h
 
+#include <cstdlib>
+#include <iostream>
 #include <vector>
 
 typedef unsigned short ushort;
 typedef unsigned char uchar;
 typedef unsigned int uint;
 
-class mmorGS
+extern class mmorGS
 {
 private:
-	ushort gs_height{10};
-	ushort gs_width{10};
-	uchar** gs_grid{nullptr};
+	ushort gs_height{ 10 };
+	ushort gs_width{ 10 };
+	uchar** gs_grid{ nullptr };
 
-	uchar gs_floorTile{176};
-	uchar gs_wallTile{219};
-	uchar gs_playerTile{64};
+	uchar gs_floorTile{ 176 };
+	uchar gs_wallTile{ 219 };
+	uchar gs_playerTile{ 64 };
 
 	ushort gs_playerPosY{ 1 };
 	ushort gs_playerPosX{ 1 };
 	int gs_playerLife{ 5 };
-	uchar gs_upKey{8};
-	uchar gs_downKey{2};
-	uchar gs_leftKey{4};
-	uchar gs_rightKey{6};
+	uchar gs_upKey{ 8 };
+	uchar gs_downKey{ 2 };
+	uchar gs_leftKey{ 4 };
+	uchar gs_rightKey{ 6 };
 
 	struct gs_enemy
 	{
@@ -38,7 +40,7 @@ private:
 	};
 	std::vector<gs_enemy> gs_enemies{};
 
-	bool gs_isFirstFrame{true};
+	bool gs_isFirstFrame{ true };
 
 public:
 	mmorGS() = default;
