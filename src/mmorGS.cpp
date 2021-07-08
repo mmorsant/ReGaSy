@@ -1,7 +1,3 @@
-#include <cstdlib>
-#include <iostream>
-#include <vector>
-
 #include <mmorGS.h>
 
 bool mmorGS::createWorld(ushort height, ushort width)
